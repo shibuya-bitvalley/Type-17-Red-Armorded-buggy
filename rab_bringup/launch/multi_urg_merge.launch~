@@ -1,0 +1,45 @@
+<launch>
+
+  <arg name="model" default="$(find nda_robot_description)/urdf/robot.urdf"/>
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(arg model)'"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+  <!-- urg node -->
+    <node pkg="urg_node" type="urg_node" name="left_urg" output="screen">
+        <param name="ip_address" value="192.168.0.13" />
+	<param name="frame_id" type="string" value="left_lrf_link"/>
+	<remap from="first" to="/left/first" />
+	<remap from="last" to="/left/last" />
+	<remap from="most_intense" to="/left/most_intense" />
+	<param name="publish_intensity" type="bool" value="true"/>
+	<param name="publish_multiecho" type="bool" value="true"/>
+	<param name="angle_min" type="double" value="-1.69297" />
+	<param name="angle_max" type="double" value="2.35619449019" />
+    </node>
+
+    <node pkg="urg_node" type="urg_node" name="right_urg" output="screen">
+	<param name="ip_address" value="192.168.0.18" />
+	<param name="frame_id" type="string" value="right_lrf_link"/>
+        <remap from="first" to="/right/first" />
+	<remap from="last" to="/right/last" />
+	<remap from="most_intense" to="/right/most_intense" />
+	<param name="publish_intensity" type="bool" value="true"/>
+	<param name="publish_multiecho" type="bool" value="true"/>	
+	<param name="angle_max" type="double" value="1.71042" />
+	<param name="angle_min" type="double" value="-2.35619449019" />
+   </node>
+
+   <!-- lrf_merger -->
+   <node pkg="ira_laser_tools" name="laserscan_multi_merger" type="laserscan_multi_merger" output="screen">
+        <param name="destination_frame" value="/lrf_link"/>
+        <param name="cloud_destination_topic" value="/lrf_cloud"/>
+	<param name="scan_destination_topic" value="/base_scan"/>
+	<param name="laserscan_topics" value ="/right/first /left/first"/>
+	<param name="angle_min" type="double" value="-3.14" />
+        <param name="angle_max" type="double" value="3.14" />
+	<param name="range_max" type="double" value="30.0" />
+	<param name="range_min" type="double" value="0.02" />
+   </node>
+
+</launch>
