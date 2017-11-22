@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<robot name="rab" xmlns:xacro="http://ros.org/wiki/xacro">
+   <xacro:include filename="$(find rab_description)/urdf/base/base.urdf.xacro"/>
+   <xacro:include filename="$(find rab_description)/urdf/wheel/wheel.urdf.xacro"/>
+   <xacro:include filename="$(find rab_description)/urdf/sensors/lrf/lrf.urdf.xacro"/>
+
+   
+   <!-- ============== Link & Joint =================== -->
+   <!-- base -->
+   <link name="base_footprint"/>
+   <xacro:base_v0 parent="base_footprint">
+         <origin xyz="0 0 0.11"/>
+   </xacro:base_v0>
+   
+   <!-- wheel -->
+   <!-- right_wheel -->
+   <xacro:wheel_v0 prefix="right" parent="base_link">
+         <origin xyz="0 -0.265 0"/>
+	 <axis xyz="0 1 0"/>
+   </xacro:wheel_v0>
+   <!-- left_wheel -->
+   <xacro:wheel_v0 prefix="left" parent="base_link">
+         <origin xyz="0 0.265 0"/>
+	 <axis xyz="0 -1 0"/>
+   </xacro:wheel_v0>
+   
+   <!-- sensors -->
+   <!-- right_lrf -->
+   <xacro:lrf_v0 prefix="right" parent="base_link">
+         <origin xyz="-0.032 -0.246 0.137" rpy="0 0 1.57" />
+   </xacro:lrf_v0>
+   <!-- left_lrf -->
+   <xacro:lrf_v0 prefix="left" parent="base_link">
+         <origin xyz="-0.032 0.246 0.137" rpy="0 0 -1.57" />
+   </xacro:lrf_v0>
+   
+   <link name="lrf_link"/>
+   <joint name="lrf_link_joint" type="fixed">
+         <parent link="base_link"/>
+	 <child link="lrf_link"/>
+	 <origin xyz="-0.032 0 0.137"/>
+   </joint>
+   
+   <!-- =========== transmission ============= -->
+   <xacro:wheel_trans_v0 prefix="right"/>
+   <xacro:wheel_trans_v0 prefix="left"/>
+   
+   <!-- =========== gazebo ============ -->
+   <gazebo>
+      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"/>
+   </gazebo>
+   
+   <!-- base -->
+   <xacro:base_gazebo_v0/>
+   
+   <!-- wheel -->
+   <xacro:wheel_gazebo_v0 prefix="right"/>
+   <xacro:wheel_gazebo_v0 prefix="left"/>
+   
+   <!-- LRF -->
+   <xacro:lrf_gazebo_v0 prefix="right" min_rad="-2.35619449019" max_rad="1.69297" 
+                                       min_range="0.10" max_range="30.0" />
+   <xacro:lrf_gazebo_v0 prefix="left"  min_rad="-1.69297" max_rad="2.35619449019"
+                                       min_range="0.10" max_range="30.0" />
+
+</robot>
