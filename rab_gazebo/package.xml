@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package>
+  <name>rab_gazebo</name>
+  <version>0.0.0</version>
+  <description>The rab_gazebo package</description>
+
+  <maintainer email="ryu.j.shibu@gmail.com">Masato Shibuya</maintainer>
+  <author email="ryu.j.shibu@gamil.com">Masato Shibuya</author>
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>gazebo_ros</run_depend>
+  <run_depend>gazebo_ros_control</run_depend>
+  <run_depend>rab_control</run_depend>
+
+</package>
