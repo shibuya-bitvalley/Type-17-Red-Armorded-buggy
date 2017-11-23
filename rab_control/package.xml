@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package>
+  <name>rab_control</name>
+  <version>0.0.0</version>
+  <description>The rab_control package</description>
+
+  <maintainer email="ryu.j.shibu@gmail.com">Masato Shibuya</maintainer>
+  <author email="ryu.j.shibu@gmail.com">Masato Shibuya</author>
+
+  <license>TODO</license>
+
+  <url type="website">https://github.com/shibuya-bitvalley/Type-17-Red-Armorded-buggy.git</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>controller_manager</run_depend>
+  <run_depend>actionlib</run_depend>
+  <run_depend>actionlib_msgs</run_depend>
+  <run_depend>control_msgs</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>robo_state_publisher</run_depend>
+
+</package>
