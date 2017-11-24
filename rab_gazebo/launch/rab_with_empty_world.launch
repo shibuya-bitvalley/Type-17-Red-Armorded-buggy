@@ -24,14 +24,6 @@
   <!-- lrf merger -->
   <include file="$(find rab_bringup)/launch/lrf_merger.launch"/>
    
-  <!-- convert joint states to TF transforms for rviz, etc -->
-  <node name="robot_state_publisher" pkg="robot_state_publisher"
-        type="robot_state_publisher"
-	respawn="false" output="screen">
-  </node>
-
-
-  
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
   		args="-urdf -model rab -param robot_description"/>
