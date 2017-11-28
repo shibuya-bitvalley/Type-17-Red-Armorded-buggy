@@ -15,7 +15,7 @@
   <run_depend>rviz</run_depend>
   <run_depend>joy</run_depend>
   <run_depend>joy_twist</run_depend>
-  <run_depend>ira_laser_tools</run_depend>
   <run_depend>urg_node</run_depend>
+  <run_depend>ira_laser_tools</run_depend>
   
 </package>
