@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <robot name="rab" xmlns:xacro="http://ros.org/wiki/xacro">
+
    <xacro:include filename="$(find rab_description)/urdf/base/base.urdf.xacro"/>
    <xacro:include filename="$(find rab_description)/urdf/wheel/wheel.urdf.xacro"/>
    <xacro:include filename="$(find rab_description)/urdf/sensors/lrf/lrf.urdf.xacro"/>
@@ -47,7 +48,9 @@
    
    <!-- =========== gazebo ============ -->
    <gazebo>
-      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so"/>
+     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <!-- <robotNamespace>Type-17_RAB</robotNamespace> -->
+     </plugin>
    </gazebo>
    
    <!-- base -->
