@@ -23,9 +23,9 @@
 	    </collision>
 	    <inertial>
 	        <origin xyz="0 0 0" />
-		<mass value="20.598" />
-		<inertia ixx="2.708" ixy="0" ixz="0"
-		         iyy="5.185" iyz="0" izz="3.383"/>
+		<mass value="25.897" />
+		<inertia ixx="1.772" ixy="0" ixz="0"
+		         iyy="3.35" iyz="0" izz="2.269"/>
 	    </inertial>
 	 </link>
    </xacro:macro>
