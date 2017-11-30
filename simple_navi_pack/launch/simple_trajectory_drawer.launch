@@ -1,0 +1,7 @@
+<!-- launch -->
+<launch >
+	<node name="simple_trajectory_drawer" pkg="trajectory_tracker" type="simple_trajectory_drawer" >
+		<param name="/world_frame" value="/world_frame" type="string" />
+		<param name="/path_file_name" value="$(env HOME)/maps/nic_garage/path.txt" type="string" />
+	</node >
+</launch >

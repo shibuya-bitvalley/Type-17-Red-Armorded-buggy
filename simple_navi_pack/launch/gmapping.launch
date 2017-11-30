@@ -1,0 +1,27 @@
+<!-- launch -->
+<launch >
+	<!-- arguments -->
+	<arg name="scan_topic_name" default="/scan" />
+
+	<!-- gmapping (http://ros.org/wiki/gmapping#Parameters) -->
+	<node pkg="gmapping" type="slam_gmapping" name="gmapping" args="scan:=$(arg scan_topic_name)" >
+		<remap from="/map" to="/amcl_map" />
+		<param name="/base_frame" value="base_link" type="string" />
+		<param name="/map_frame" value="map" type="string" />
+		<param name="/odom_frame" value="odom" type="string" />
+		<param name="/map_update_interval" value="5.0" type="double" />
+		<param name="/particles" value="50" type="int" />
+		<param name="/resampleThreshold" value="0.5" type="double" /> <!-- effective sample size based resampling threshold -->
+		<param name="/xmin" value="-50.0" type="double" />
+		<param name="/ymin" value="-50.0" type="double" />
+		<param name="/xmax" value="50.0" type="double" />
+		<param name="/ymax" value="50.0" type="double" />
+		<param name="/delta" value="0.05" type="double" /> <!-- resolution of the map -->
+		<param name="/maxUrange" value="30.0" type="double" /> <!-- the maximum usable range of the laser. A beam is cropped to this value -->
+		<param name="/iterations" value="10" type="int" /> <!-- number of iterations of the scanmatcher -->
+		<param name="/srr" value="0.05" type="double" />	<!-- odometry error in translation as a function of translation (rho/rho) -->
+		<param name="/srt" value="0.1" type="double" />	<!-- odometry error in translation as a function of rotation (rho/theta) -->
+		<param name="/str" value="0.05" type="double" />	<!-- odometry error in translation as a function of translation (theta/rho) -->
+		<param name="/stt" value="0.1" type="double" />	<!-- odometry error in translation as a function of rotation (theta/theta) -->
+	</node >
+</launch >

@@ -1,0 +1,10 @@
+<!-- launch -->
+<launch >
+	<node name="simple_trajectory_recorder" pkg="trajectory_tracker" type="simple_trajectory_recorder" >
+		<param name="/world_frame" value="/world" type="string" />
+		<param name="/base_frame" value="/base_link" type="string" />
+		<param name="/path_file_name" value="$(env HOME)/maps/circle/path.txt" type="string" />
+		<param name="/dist_interval" value="0.5" type="double" />	<!-- m -->
+		<param name="/angle_interval" value="2.0" type="double" />	<!-- deg -->
+	</node >
+</launch >

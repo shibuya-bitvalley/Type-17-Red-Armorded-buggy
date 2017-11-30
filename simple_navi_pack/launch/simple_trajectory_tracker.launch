@@ -1,0 +1,14 @@
+<!-- launch -->
+<launch >
+	<node name="simple_trajectory_tracker" pkg="trajectory_tracker" type="simple_trajectory_tracker" >
+		<param name="/world_frame" value="/world" type="string" />
+		<param name="/base_frame" value="/base_link" type="string" />
+		<param name="/path_file_name" value="$(env HOME)/maps/nic_garage/path.txt" type="string" />
+		<param name="/look_ahead_dist" value="1.0" type="double" />	<!-- m -->
+		<param name="/max_vel" value="0.7" type="double" />	<!-- m/sec -->
+		<param name="/kv" value="0.6" type="double" />
+		<param name="/twist_cmd_name" value="/twist_cmd" type="string" />
+		<param name="/debug" value="true" type="bool" />
+		<param name="/iterate_tracking" value="false" type="bool" />
+	</node >
+</launch >
