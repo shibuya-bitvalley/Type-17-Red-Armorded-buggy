@@ -18,6 +18,7 @@
 	</geometry>
       </visual>
       <collision>
+      <origin xyz="0 0 -0.055"/>
         <geometry>
 	  <mesh filename="package://rab_description/meshes/STL/${prefix}_lrf_link.stl"/>
 	</geometry>
