@@ -13,7 +13,7 @@ diff_drive_controller:
   # Wheel separation and diameter. These are both optional.
   # diff_drive_controller will attempt to read either one or both from the
   # URDF if not specified as a parameter
-  wheel_separation : 0.524
+  wheel_separation : 0.514
   wheel_radius : 0.110
 
   # Wheel separation and radius multipliers
