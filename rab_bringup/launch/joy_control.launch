@@ -2,7 +2,7 @@
   <!-- arguments -->
   <arg name="joy_dev" default="/dev/input/js0" />
   <arg name="joy_config" default="$(find rab_bringup)/config/sanwa.yaml" />
-  <arg name="robot_config" default="$(find rab_bringup)/config/sanwa.yaml" />
+  <arg name="robot_config" default="$(find rab_bringup)/config/rab.yaml" />
 
   <!-- joy_node -->
   <node respawn="true" pkg="joy" type="joy_node" name="joy">
