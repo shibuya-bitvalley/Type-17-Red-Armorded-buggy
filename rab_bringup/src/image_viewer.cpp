@@ -5,10 +5,8 @@
 class odom{
  public:   
    int flag;   //画像を表示するためのフラグ
-   
  private:
    void chatterCallback(const nav_msgs::Odometry::ConstPtr& msg);
-   int changeflag(const nav_msgs::Odometry::ConstPtr& msg);
 };
    
 void chatterCallback(const nav_msgs::Odometry::ConstPtr& msg){
@@ -24,7 +22,7 @@ void chatterCallback(const nav_msgs::Odometry::ConstPtr& msg){
 }
 
 //画像表示を行うためのフラグをいじる関数
-int changeflag(const nav_msg::Odometry::ConstPtr& msg){
+int changeflag(const nav_msgs::Odometry::ConstPtr& msg){
    double orientation_z = 0;
    double orientation_w = 0;
    double th0 = 0;
@@ -33,12 +31,10 @@ int changeflag(const nav_msg::Odometry::ConstPtr& msg){
    th1 = 2 * acos(msg->pose.pose.orientation.w / 2);
 }
 
-   
-   
-
 int main(int argc, char **argv){
    ros::init(argc, argv, "image_viewer");
+   ros::NodeHandle n;
+   ros::Subscriber sub;
    sub = n.subscribe("/diff_drive_controller/odom", 1000, chatterCallback);
-   
    ros::spin();
 }
