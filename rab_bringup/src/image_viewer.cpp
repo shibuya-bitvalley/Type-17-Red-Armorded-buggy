@@ -1,7 +1,13 @@
 #include <ros/ros.h>
-#include <nav_msgs/Odometry.h>
-#include <cmath>
+#include <ros/package.h>
+//#include <nav_msgs/Odometry.h>
+//#include <cmath>
 
+#include <opencv2/opencv.hpp>
+#include <opencv2/opencv_lib.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
+/*
 class odom{
  public:   
    int flag;   //画像を表示するためのフラグ
@@ -21,6 +27,7 @@ void chatterCallback(const nav_msgs::Odometry::ConstPtr& msg){
    ROS_INFO("Orientation-> th0: [%lf], th1: [%lf]", th0 * 180 / 3.14, th1 * 180 / 3.14);
 }
 
+
 //画像表示を行うためのフラグをいじる関数
 int changeflag(const nav_msgs::Odometry::ConstPtr& msg){
    double orientation_z = 0;
@@ -30,11 +37,24 @@ int changeflag(const nav_msgs::Odometry::ConstPtr& msg){
    double th1 = 0;
    th1 = 2 * acos(msg->pose.pose.orientation.w / 2);
 }
+*/
 
 int main(int argc, char **argv){
    ros::init(argc, argv, "image_viewer");
-   ros::NodeHandle n;
-   ros::Subscriber sub;
-   sub = n.subscribe("/diff_drive_controller/odom", 1000, chatterCallback);
+   ros::NodeHandle n("~");
+   //ros::Subscriber sub;
+   //sub = n.subscribe("/odom", 1000, chatterCallback);
+   
+   cv::Mat first_img;
+   std::string first_path;
+   n.param<std::string>("1st_image", first_path, ros::package::getPath("rab_bringup") + "/picture/sample.JPG");
+   first_img = cv::imread("first_path", 1);
+   // 画像が読み込まれなかったら終了
+   if(first_img.empty()) return -1;
+   
+   // 画像表示
+   cv::namedWindow("Image", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
+   cv::imshow("Image", first_img);
+   
    ros::spin();
 }
