@@ -2,9 +2,7 @@
 #include <ros/package.h>
 //#include <nav_msgs/Odometry.h>
 //#include <cmath>
-
 #include <opencv2/opencv.hpp>
-//#include <opencv2/opencv_lib.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
 /*
@@ -47,7 +45,15 @@ int main(int argc, char **argv){
    
    cv::Mat first_img;
    std::string first_path;
-   n.param<std::string>("image", first_path, ros::package::getPath("rab_bringup") + "/picture/sample.JPG");
+   std::string image_path_;
+   n.param<std::string>("image_path", first_path, ros::package::getPath("rab_bringup") + "/picture/sample.JPG");
+   if(n.getParam("image_path", image_path_)){
+      ROS_INFO("Got Param: %s", image_path_.c_str());
+   }else{
+      n.setParam("image_path", image_path_.c_str());
+      ROS_WARN("Set 'image_path' default!");
+   }
+   //ROS_INFO("first path = %s", first_path.c_str());
    first_img = cv::imread(first_path, 1);
    // 画像が読み込まれなかったら終了
    if(first_img.empty()) return -1;
@@ -55,6 +61,7 @@ int main(int argc, char **argv){
    // 画像表示
    cv::namedWindow("Image", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
    cv::imshow("Image", first_img);
-   
+   cv::waitKey();
    ros::spin();
+   return 0;
 }
