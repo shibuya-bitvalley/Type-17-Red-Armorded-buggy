@@ -4,7 +4,7 @@
 //#include <cmath>
 
 #include <opencv2/opencv.hpp>
-#include <opencv2/opencv_lib.hpp>
+//#include <opencv2/opencv_lib.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
 /*
@@ -47,8 +47,8 @@ int main(int argc, char **argv){
    
    cv::Mat first_img;
    std::string first_path;
-   n.param<std::string>("1st_image", first_path, ros::package::getPath("rab_bringup") + "/picture/sample.JPG");
-   first_img = cv::imread("first_path", 1);
+   n.param<std::string>("image", first_path, ros::package::getPath("rab_bringup") + "/picture/sample.JPG");
+   first_img = cv::imread(first_path, 1);
    // 画像が読み込まれなかったら終了
    if(first_img.empty()) return -1;
    
