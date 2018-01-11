@@ -3,6 +3,7 @@
   <node name="image_viewer" pkg="rab_bringup" type="image_viewer" output="screen">
     <param name="odom_topic" value="/odom" />
     <param name="first_path" value="$(find rab_bringup)/picture/ubuntu-logo.png" />
+    <param name="second_path" value="$(find rab_bringup)/picture/linux_dekiru.jpeg" />
   </node>
   
 </launch>
