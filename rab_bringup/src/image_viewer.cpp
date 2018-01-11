@@ -42,6 +42,7 @@ int main(int argc, char **argv){
    ros::init(argc, argv, "image_viewer");
    ros::NodeHandle n("~");
    ros::Subscriber sub;
+   
    //subscribe topicの設定
    std::string odom_topic_;
    n.param<std::string>("odom_topic", odom_topic_, "/diff_drive_controller/odom"); 
@@ -51,13 +52,6 @@ int main(int argc, char **argv){
    cv::Mat first_img;
    std::string first_path_;
    n.param<std::string>("first_path", first_path_, ros::package::getPath("rab_bringup") + "/picture/sample.JPG");
-   /*
-    if(n.getParam("first_path", first_path_)){
-      ROS_INFO("Got Param: %s", first_path_.c_str());
-   }else{
-      n.setParam("first_path", first_path_.c_str());
-      ROS_WARN("Set 'first_path' default!");
-   }*/
    first_img = cv::imread(first_path_, 1);
 
    //2枚目
