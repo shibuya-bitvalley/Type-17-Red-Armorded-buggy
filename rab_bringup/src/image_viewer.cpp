@@ -58,7 +58,7 @@ int main(int argc, char **argv){
    
    first_img = cv::imread(first_path_, 1);
    // 画像が読み込まれなかったら終了
-   if(first_img.empty()) ROS_ERROR("can't load image");
+   if(first_img.empty()) return -1;
       
    // 画像表示
    cv::namedWindow("Image", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
