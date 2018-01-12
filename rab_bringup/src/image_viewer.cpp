@@ -15,6 +15,7 @@ class odom{
 */
    
 void chatterCallback(const nav_msgs::Odometry::ConstPtr& msg){
+   /*
    double orientation_z = 0;
    double orientation_w = 0;
    double th0 = 0;
@@ -22,18 +23,21 @@ void chatterCallback(const nav_msgs::Odometry::ConstPtr& msg){
    double th1 = 0;
    th1 = 2 * acos(msg->pose.pose.orientation.w / 2);
    ROS_INFO("Seq: [%d]", msg->header.seq);
+   */ 
    ROS_INFO("Position-> x: [%lf], y: [%lf]", msg->pose.pose.position.x, msg->pose.pose.position.y);
-   ROS_INFO("Orientation-> th0: [%lf], th1: [%lf]", th0 * 180 / 3.14, th1 * 180 / 3.14);
+   //ROS_INFO("Orientation-> th0: [%lf], th1: [%lf]", th0 * 180 / 3.14, th1 * 180 / 3.14);
+   double pose_x = msg->pose.pose.position.x;
+   double pose_y = msg->pose.pose.position.y;
 }
 
-int isInSquare(const nav_msgs::Odometry::ConstPtr& msg, double x, double y, double meter){
+int isInSquare(double& position_x, double& position_y, double x, double y, double meter){
    double current_x = msg->pose.pose.position.x;
    double current_y = msg->pose.pose.position.y;
    double plus_x = x + meter;
    double minus_x = x - meter;
    double plus_y = y + meter;
    double minus_y = y - meter;
-   if(minus_x < x && x < plus_x && minus_y < y && y < plus_y){
+   if(minus_x < &position_x && &position_x < plus_x && minus_y < &position_y && &position_y < plus_y){
       return 0;
    }else{
       return 1;
@@ -87,12 +91,13 @@ int main(int argc, char **argv){
 
    // フラグの設定
    int count;
-   if(flag == 0 && isInSquare(0.0, 0.0, 2.0) == 0){
+   //nav_msgs::Odomety pose;
+   if(flag == 0 && isInSquare(position_x&, position_y&, 0.0, 0.0, 2.0) == 0){
       flag = 1;
       cv::imshow("Image", first_img);
       cv::waitKey(1);
       count = 0;
-   }else if(flag == 0 && isInSquare(10.0, 10.0, 2.0) == 0){
+   }else if(flag == 0 && isInSquare(position_x&, position_y&, 10.0, 10.0, 2.0) == 0){
       flag = 1;
       cv::imshow("Image", second_img);
       cv::waitKey(1);
@@ -106,21 +111,6 @@ int main(int argc, char **argv){
       ROS_WARN("count = %d", count);
    }
    
-   /*
-   for(int i = 0; i < 10; i++) {
-      if(i <= 4){
-	 cv::imshow("Image", first_img);
-	 cv::waitKey(1);
-	 ROS_WARN("場合分け１");
-      }else{
-	 cv::imshow("Image", second_img);
-	 cv::waitKey(1);
-	 ROS_ERROR("場合分け２");
-      }
-      ROS_INFO("time = %d", i);
-      sleep(1);
-   }
-   */ 
    ros::spin();
    return 0;
 }
