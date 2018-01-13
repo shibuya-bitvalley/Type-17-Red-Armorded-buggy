@@ -7,7 +7,7 @@
 
 class Digital_Signage{
  public:
-   int run(){
+   Digital_Signage(){
       ros::NodeHandle n("~");
       ros::Subscriber sub;
       count = 0;
@@ -31,13 +31,22 @@ class Digital_Signage{
       default_img = cv::imread(default_path_, 1);
 
       // subscribe topicの設定
-      n.param<std::string>("odom_topic", odom_topic_, "/diff_drive_controller/odom"); 
-      sub = n.subscribe(odom_topic_, 1000, &Digital_Signage::odomCallback, this);
+      n.param<std::string>("odom_topic", odom_topic_, "/diff_drive_controller/odom");
+      ROS_INFO("Subscribe topic : %s",odom_topic_.c_str());
+      sub = n.subscribe("diff_drive_controller/odom", 1000, &Digital_Signage::odomCallback, this);
       
       ROS_INFO("first_path = %s", first_path_.c_str());
       ROS_INFO("second_path = %s", second_path_.c_str());
       ROS_INFO("default_path = %s", default_path_.c_str());
+      
       //publish_image();
+      ros::spin();
+   }
+   
+   void run(){
+      while(ros::ok){
+	 publish_image();
+      }
    }
    
    void odomCallback(const nav_msgs::Odometry::ConstPtr& msg){
@@ -75,7 +84,6 @@ class Digital_Signage{
       ROS_ERROR("default img draw");
       cv::waitKey(0);
       
-      /*
       // 画像表示
       if(flag == 0 && isInSquare(odom, 0.0, 0.0, 2.0) == 0){
 	 flag = 1;	 
@@ -98,10 +106,9 @@ class Digital_Signage{
 	 cv::imshow("Image", default_img);
 	 ROS_ERROR("default img draw");
 	 cv::waitKey(1);
-      }*/
+      }
    }
-   
-	 
+   	 
    int isInSquare(const nav_msgs::Odometry::ConstPtr& msg, double x, double y, double meter){
       double current_x = msg->pose.pose.position.x;
       double current_y = msg->pose.pose.position.y;
@@ -143,9 +150,9 @@ int main(int argc, char **argv){
    int check_flag = digital_signage.check_image();
    if(check_flag == -1){
       ROS_WARN("load Image ERROR!!");
-      //return -1;
+      return -1;
    }
    digital_signage.run();
-   ros::spin();
+   //ros::spin();
    return 0;
 }
