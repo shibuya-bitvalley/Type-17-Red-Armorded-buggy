@@ -12,6 +12,9 @@ class Digital_Signage{
       ros::Subscriber sub;
       count = 0;
       
+      // window作成
+      cv::namedWindow("Image", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
+
       // 画像読み込み１枚目
       n.param<std::string>("first_path", first_path_, ros::package::getPath("rab_bringup") + "/picture/sample.JPG");
       first_img = cv::imread(first_path_, 1);
@@ -33,7 +36,7 @@ class Digital_Signage{
       // subscribe topicの設定
       n.param<std::string>("odom_topic", odom_topic_, "/diff_drive_controller/odom");
       ROS_INFO("Subscribe topic : %s",odom_topic_.c_str());
-      sub = n.subscribe("diff_drive_controller/odom", 1000, &Digital_Signage::odomCallback, this);
+      sub = n.subscribe("/diff_drive_controller/odom", 1000, &Digital_Signage::odomCallback, this);
       
       ROS_INFO("first_path = %s", first_path_.c_str());
       ROS_INFO("second_path = %s", second_path_.c_str());
@@ -44,14 +47,13 @@ class Digital_Signage{
    }
    
    void run(){
-      while(ros::ok){
-	 publish_image();
+      while(ros::ok()){
+	 ros::spin();
       }
    }
    
-   void odomCallback(const nav_msgs::Odometry::ConstPtr& msg){
-      
-      ROS_ERROR("hogehoge errorrrrrrrrrrrr");
+   void odomCallback(const nav_msgs::Odometry::ConstPtr& msg){      
+      //ROS_ERROR("hogehoge errorrrrrrrrrrrr");
       /*
        double orientation_z = 0;
        double orientation_w = 0;
@@ -65,7 +67,7 @@ class Digital_Signage{
       //ROS_INFO("Orientation-> th0: [%lf], th1: [%lf]", th0 * 180 / 3.14, th1 * 180 / 3.14);
       pose_x = msg->pose.pose.position.x;
       pose_y = msg->pose.pose.position.y;
-      ROS_WARN("position = %lf, %lf", pose_x, pose_y);
+      ROS_INFO("position = %lf, %lf", pose_x, pose_y);
       publish_image();
    }
    
@@ -76,15 +78,20 @@ class Digital_Signage{
    }
    
    void publish_image(){
-
       // window作成
       cv::namedWindow("Image", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
 
+      /*
       cv::imshow("Image", default_img);
-      ROS_ERROR("default img draw");
-      cv::waitKey(0);
-      
+      ROS_ERROR("start Digital Signage");
+      cv::waitKey(1);
+      */
       // 画像表示
+      if(count > 100 || count == 0){
+	 cv::imshow("Image", default_img);
+	 ROS_ERROR("default img draw");
+	 cv::waitKey(1);
+      }
       if(flag == 0 && isInSquare(odom, 0.0, 0.0, 2.0) == 0){
 	 flag = 1;	 
 	 cv::imshow("Image", first_img);
@@ -101,11 +108,6 @@ class Digital_Signage{
 	 flag = 0;
 	 count+=1;
 	 ROS_WARN("count = %d", count);
-      }
-      if(count > 100){
-	 cv::imshow("Image", default_img);
-	 ROS_ERROR("default img draw");
-	 cv::waitKey(1);
       }
    }
    	 
@@ -149,10 +151,9 @@ int main(int argc, char **argv){
    Digital_Signage digital_signage;
    int check_flag = digital_signage.check_image();
    if(check_flag == -1){
-      ROS_WARN("load Image ERROR!!");
+      ROS_ERROR("load Image ERROR!!");
       return -1;
    }
    digital_signage.run();
-   //ros::spin();
    return 0;
 }
