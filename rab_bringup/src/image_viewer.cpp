@@ -59,15 +59,16 @@ DigitalSignage::DigitalSignage(){
    default_img = cv::imread(default_path_, 1);
    
    // subscribe topicの設定
-   //n.param<std::string>("odom_topic", odom_topic_, "/diff_drive_controller/odom");
-   //ROS_INFO("Subscribe topic : %s",odom_topic_.c_str());
-   sub = n.subscribe("/diff_drive_controller/odom", 1000, &DigitalSignage::odomCallback, this);
+   n.param<std::string>("odom_topic", odom_topic_, "\"/diff_drive_controller/odom\"");
+   ROS_INFO("Subscribe topic : %s",odom_topic_.c_str());
+   sub = n.subscribe(odom_topic_, 1000, &DigitalSignage::odomCallback, this);
    
    //ROS_INFO("first_path = %s", first_path_.c_str());
    //ROS_INFO("second_path = %s", second_path_.c_str());
    //ROS_INFO("default_path = %s", default_path_.c_str());
    
    ROS_INFO("コンストラクタ終わり");
+   ros::spin();
 }
 
 int DigitalSignage::isInSquare(const nav_msgs::Odometry::ConstPtr& msg, double x, double y, double meter){
@@ -85,8 +86,10 @@ int DigitalSignage::isInSquare(const nav_msgs::Odometry::ConstPtr& msg, double x
 }      
 
 void DigitalSignage::run(){
+   //ros::Rate rate(1.0);
    while(ros::ok()){
       ROS_WARN("running");
+      //rate.sleep();
       ros::spinOnce();
       DigitalSignage::publish_image();
    }
@@ -164,12 +167,11 @@ int main(int argc, char **argv){
    }else{
       ROS_ERROR("program start !!!!!!!!!!!!!!!!");
    }
-   ROS_WARN("constract");
    
    // window作成
    cv::namedWindow("Image", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
 
    digital_signage.run();
    ROS_ERROR("hoge");
-   return 0;
+   //return 0;
 }
