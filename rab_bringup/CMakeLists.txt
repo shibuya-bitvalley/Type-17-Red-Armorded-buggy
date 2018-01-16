@@ -204,3 +204,6 @@ target_link_libraries(image_viewer ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 add_executable(param_test src/param_test.cpp)
 target_link_libraries(param_test ${catkin_LIBRARIES})
+
+add_executable(odom_listener src/odom_listener.cpp)
+target_link_libraries(odom_listener ${catkin_LIBRARIES})

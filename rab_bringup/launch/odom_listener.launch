@@ -1,0 +1,5 @@
+<launch>
+  <node name="odom_listener" pkg="rab_bringup" type="odom_listener" output="screen">
+    <param name="odom_topic" value="/diff_drive_controller/odom" />
+  </node>
+</launch>
