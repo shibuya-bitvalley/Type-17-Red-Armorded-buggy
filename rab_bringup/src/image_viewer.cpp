@@ -68,7 +68,7 @@ DigitalSignage::DigitalSignage(){
    //ROS_INFO("default_path = %s", default_path_.c_str());
    
    ROS_INFO("コンストラクタ終わり");
-   ros::spin();
+   //ros::spin();
 }
 
 int DigitalSignage::isInSquare(const nav_msgs::Odometry::ConstPtr& msg, double x, double y, double meter){
@@ -86,10 +86,10 @@ int DigitalSignage::isInSquare(const nav_msgs::Odometry::ConstPtr& msg, double x
 }      
 
 void DigitalSignage::run(){
-   //ros::Rate rate(1.0);
+   ros::Rate rate(1.0);
    while(ros::ok()){
       ROS_WARN("running");
-      //rate.sleep();
+      rate.sleep();
       ros::spinOnce();
       DigitalSignage::publish_image();
    }
