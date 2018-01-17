@@ -15,14 +15,14 @@ class OdomListener{
 };
 
 OdomListener::OdomListener(){
-   //ros::NodeHandle n;
+   ros::NodeHandle nh("~");
    ROS_INFO("コンストラクタ呼び出し");
-   //ros::Subscriber sub;
+   ros::Subscriber sub;
    
    // Subscribe Topicの設定
    //n.param<std::string>("odom_topic", odom_topic_, "\"/diff_drive_controller/odom\"");
    //ROS_INFO("Subscribe topic : %s", odom_topic_.c_str());
-   //sub = n.subscribe("/diff_drive_controller/odom", 1000, &OdomListener::OdomCallback, this);
+   sub = nh.subscribe("/diff_drive_controller/odom", 1000, &OdomListener::OdomCallback, this);
    
    ROS_INFO("コンストラクタ終わり");
 }
