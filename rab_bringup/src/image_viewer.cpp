@@ -141,8 +141,8 @@ int main(int argc, char **argv){
 
    // window作成
    cv::namedWindow("Image", CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO | CV_GUI_NORMAL);
-   cv::resizeWindow("Image", 1015, 2560);
-   cv::moveWindow("Image", 0, 0);
+   //cv::resizeWindow("Image", 1015, 2560);
+   //cv::moveWindow("Image", 0, 0);
 
    ros::spin();
    return 0;
