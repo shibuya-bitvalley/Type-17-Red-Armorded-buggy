@@ -7,38 +7,43 @@
 
 class DigitalSignage{
  public:
-   DigitalSignage();
+   DigitalSignage(ros::NodeHandle &nh);
+
+ private:
    int isInSquare(const nav_msgs::Odometry::ConstPtr& msg, double x, double y, double meter);
    void odomCallback(const nav_msgs::Odometry::ConstPtr& msg);
-   void run();
+   void publish_image(const nav_msgs::Odometry::ConstPtr& msg);
    int check_image();   
-   void publish_image();   
+
    int flag;   //画像を表示するためのフラグ
    double pose_x;
    double pose_y;
-   const nav_msgs::Odometry::ConstPtr odom;
+   
+   // subscriber
+   ros::Subscriber sub_odom;
+
+   // param for topic
    std::string odom_topic_;
-   cv::Mat first_img;
    std::string first_path_;
-   cv::Mat second_img;
    std::string second_path_;
-   cv::Mat default_img;
    std::string default_path_;
    double first_x_;
    double first_y_;
    double second_x_;
    double second_y_;
+   
+   cv::Mat first_img;
+   cv::Mat second_img;
+   cv::Mat default_img;
+   
    int count;
-
- private:
 
 };
    
-DigitalSignage::DigitalSignage(){
-   ROS_INFO("コンストラクタ呼び出し");
+DigitalSignage::DigitalSignage(ros::NodeHandle &nh){
+   // using parameter server
    ros::NodeHandle n("~");
-   ros::Subscriber sub;
-   count = 0;
+   count = -10;
    
    // 画像読み込み１枚目
    n.param<std::string>("first_path", first_path_, ros::package::getPath("rab_bringup") + "/picture/sample.JPG");
@@ -61,14 +66,7 @@ DigitalSignage::DigitalSignage(){
    // subscribe topicの設定
    n.param<std::string>("odom_topic", odom_topic_, "\"/diff_drive_controller/odom\"");
    ROS_INFO("Subscribe topic : %s",odom_topic_.c_str());
-   sub = n.subscribe(odom_topic_, 1000, &DigitalSignage::odomCallback, this);
-   
-   //ROS_INFO("first_path = %s", first_path_.c_str());
-   //ROS_INFO("second_path = %s", second_path_.c_str());
-   //ROS_INFO("default_path = %s", default_path_.c_str());
-   
-   ROS_INFO("コンストラクタ終わり");
-   //ros::spin();
+   sub_odom = nh.subscribe(odom_topic_, 1000, &DigitalSignage::odomCallback, this);
 }
 
 int DigitalSignage::isInSquare(const nav_msgs::Odometry::ConstPtr& msg, double x, double y, double meter){
@@ -85,43 +83,28 @@ int DigitalSignage::isInSquare(const nav_msgs::Odometry::ConstPtr& msg, double x
    }
 }      
 
-void DigitalSignage::run(){
-   ros::Rate rate(1.0);
-   while(ros::ok()){
-      ROS_WARN("running");
-      rate.sleep();
-      ros::spinOnce();
-      DigitalSignage::publish_image();
-   }
-}
-
-void DigitalSignage::publish_image(){
-   // window作成
-   //cv::namedWindow("Image", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
-   
+void DigitalSignage::publish_image(const nav_msgs::Odometry::ConstPtr& msg){
    // 画像表示
-   if(count > 100 || count == 0){
+   if(count > 250 || count <= -1){
+      flag = 0;
       cv::imshow("Image", default_img);
-      ROS_ERROR("default img draw");
-      cv::waitKey(1);
+      cv::waitKey(10);
    }
-   if(flag == 0 && isInSquare(odom, 0.0, 0.0, 2.0) == 0){
+   if(flag <= 10 && isInSquare(msg, first_x_, first_y_, 2.0) == 0){
       flag = 1;	 
       cv::imshow("Image", first_img);
-      ROS_ERROR("1st img draw");
-      cv::waitKey(1);	  
+      cv::waitKey(10);	  
       count = 0;
-   }else if(flag == 0 && isInSquare(odom, 10.0, 10.0, 2.0) == 0){
+   }else if(flag <= 10 && isInSquare(msg, second_x_, second_y_, 2.0) == 0){
       flag = 1;	 
       cv::imshow("Image", second_img);
-      ROS_ERROR("2nd img draw");
-      cv::waitKey(1);	  
+      cv::waitKey(10);	  
       count = 0;
    }else{
-      flag = 0;
+      flag = 1;
       count+=1;
-      ROS_WARN("count = %d", count);
    }
+   ROS_WARN("count = %d", count);
 }
 
 void DigitalSignage::odomCallback(const nav_msgs::Odometry::ConstPtr& msg){
@@ -134,14 +117,12 @@ void DigitalSignage::odomCallback(const nav_msgs::Odometry::ConstPtr& msg){
     th1 = 2 * acos(msg->pose.pose.orientation.w / 2);
     ROS_INFO("Seq: [%d]", msg->header.seq);
     */ 
-   //ROS_INFO("Position-> x: [%lf], y: [%lf]", msg->pose.pose.position.x, msg->pose.pose.position.y);
+   ROS_INFO("Position-> x: [%lf], y: [%lf]", msg->pose.pose.position.x, msg->pose.pose.position.y);
    //ROS_INFO("Orientation-> th0: [%lf], th1: [%lf]", th0 * 180 / 3.14, th1 * 180 / 3.14);
-   pose_x = msg->pose.pose.position.x;
-   pose_y = msg->pose.pose.position.y;
-   ROS_INFO("position = %lf, %lf", pose_x, pose_y);
-   //publish_image();
+   publish_image(msg);
 }
 
+/*
 int DigitalSignage::check_image(){
    // 画像が読み込まれなかったら終了
    if(first_img.empty() || second_img.empty() || default_img.empty()){
@@ -151,27 +132,18 @@ int DigitalSignage::check_image(){
       ROS_INFO("load success");
       return 0;
    }  
-}
-
+}*/   
 
 int main(int argc, char **argv){
    ros::init(argc, argv, "image_viewer");
-   DigitalSignage digital_signage;
-   
-   // 画像が読み込めてるかどうかのチェック
-   int check_flag;
-   check_flag = digital_signage.check_image();
-   if(check_flag == -1){
-      ROS_ERROR("load Image ERROR!!");
-      return -1;
-   }else{
-      ROS_ERROR("program start !!!!!!!!!!!!!!!!");
-   }
-   
-   // window作成
-   cv::namedWindow("Image", CV_WINDOW_AUTOSIZE|CV_WINDOW_FREERATIO);
+   ros::NodeHandle nh;
+   DigitalSignage digital_signage(nh);
 
-   digital_signage.run();
-   ROS_ERROR("hoge");
-   //return 0;
+   // window作成
+   cv::namedWindow("Image", CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO | CV_GUI_NORMAL);
+   cv::resizeWindow("Image", 1015, 2560);
+   cv::moveWindow("Image", 0, 0);
+
+   ros::spin();
+   return 0;
 }

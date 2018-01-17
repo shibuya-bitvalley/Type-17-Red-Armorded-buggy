@@ -5,35 +5,28 @@
 
 class OdomListener{
  public:
-   OdomListener();
-   void run();
-   void OdomCallback(const nav_msgs::Odometry::ConstPtr& msg);
-   std::string odom_topic_;
-   
+   OdomListener(ros::NodeHandle &nh);
+
  private:
+   void OdomCallback(const nav_msgs::Odometry::ConstPtr& msg);
+   
+   // param for topic
+   std::string odom_topic_;   
+   
+   // subscriber
+   ros::Subscriber odom_sub;
      
 };
 
-OdomListener::OdomListener(){
-   ros::NodeHandle nh("~");
-   ROS_INFO("コンストラクタ呼び出し");
-   ros::Subscriber sub;
+OdomListener::OdomListener(ros::NodeHandle &nh){
+   // using parameter server
+   ros::NodeHandle n("~");
    
    // Subscribe Topicの設定
-   //n.param<std::string>("odom_topic", odom_topic_, "\"/diff_drive_controller/odom\"");
-   //ROS_INFO("Subscribe topic : %s", odom_topic_.c_str());
-   sub = nh.subscribe("/diff_drive_controller/odom", 1000, &OdomListener::OdomCallback, this);
+   n.param<std::string>("odom_topic", odom_topic_, "\"/diff_drive_controller/odom\"");
+   ROS_INFO("Subscribe topic : %s", odom_topic_.c_str());
+   odom_sub = nh.subscribe(odom_topic_, 1000, &OdomListener::OdomCallback, this);
    
-   ROS_INFO("コンストラクタ終わり");
-}
-
-void OdomListener::run(){
-   ros::Rate rate(1.0);
-   while(ros::ok()){
-      ROS_WARN("running");
-      ros::spinOnce();
-      rate.sleep();
-   }   
 }
 
 void OdomListener::OdomCallback(const nav_msgs::Odometry::ConstPtr& msg){
@@ -49,10 +42,9 @@ void OdomListener::OdomCallback(const nav_msgs::Odometry::ConstPtr& msg){
 
 int main(int argc, char **argv){
    ros::init(argc, argv, "odom_listener");
-   OdomListener listener;
-   ros::NodeHandle n;
-   //ros::Subscriber sub = n.subscribe("/diff_drive_controller/odom", 1000, &OdomListener::OdomCallback, &odom_listener);
-   listener.run();
+   ros::NodeHandle nh;
+   OdomListener listener(nh);
+   ros::spin();
    return 0;
 }
 
