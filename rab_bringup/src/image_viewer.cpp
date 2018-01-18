@@ -66,7 +66,7 @@ DigitalSignage::DigitalSignage(ros::NodeHandle &nh){
    // subscribe topicの設定
    n.param<std::string>("odom_topic", odom_topic_, "\"/diff_drive_controller/odom\"");
    ROS_INFO("Subscribe topic : %s",odom_topic_.c_str());
-   sub_odom = nh.subscribe(odom_topic_, 1000, &DigitalSignage::odomCallback, this);
+   sub_odom = nh.subscribe(odom_topic_, 100, &DigitalSignage::odomCallback, this);
 }
 
 int DigitalSignage::isInSquare(const nav_msgs::Odometry::ConstPtr& msg, double x, double y, double meter){
@@ -88,17 +88,17 @@ void DigitalSignage::publish_image(const nav_msgs::Odometry::ConstPtr& msg){
    if(count > 250 || count <= -1){
       flag = 0;
       cv::imshow("Image", default_img);
-      cv::waitKey(10);
+      cv::waitKey(1);
    }
    if(flag <= 10 && isInSquare(msg, first_x_, first_y_, 2.0) == 0){
       flag = 1;	 
       cv::imshow("Image", first_img);
-      cv::waitKey(10);	  
+      cv::waitKey(1);	  
       count = 0;
    }else if(flag <= 10 && isInSquare(msg, second_x_, second_y_, 2.0) == 0){
       flag = 1;	 
       cv::imshow("Image", second_img);
-      cv::waitKey(10);	  
+      cv::waitKey(1);	  
       count = 0;
    }else{
       flag = 1;
@@ -140,9 +140,8 @@ int main(int argc, char **argv){
    DigitalSignage digital_signage(nh);
 
    // window作成
-   cv::namedWindow("Image", CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO | CV_GUI_NORMAL);
-   //cv::resizeWindow("Image", 1015, 2560);
-   //cv::moveWindow("Image", 0, 0);
+   cv::namedWindow("Image", CV_WINDOW_AUTOSIZE | CV_GUI_NORMAL);
+   cv::moveWindow("Image", 0, 0);
 
    ros::spin();
    return 0;
