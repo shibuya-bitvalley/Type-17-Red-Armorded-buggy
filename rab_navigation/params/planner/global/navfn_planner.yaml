@@ -1,0 +1,8 @@
+base_global_planner: navfn/NavfnROS
+NavfnROS:
+  # Robot configuration parameters  
+  default_tolerance: 1.0
+  allow_unkown: false
+  planner_window_x: 1.5
+  planner_window_y: 1.5
+  visualize_potential: false
