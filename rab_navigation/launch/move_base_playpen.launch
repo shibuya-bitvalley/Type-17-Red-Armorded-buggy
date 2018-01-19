@@ -1,15 +1,15 @@
 <launch>
   <master auto="start"/>
   <!-- AMCL -->
-  <include file="$(find rab_navigation)/launch/amcl/amcl_playpen.launch"/>
+  <include file="$(find rab_navigation)/launch/amcl/amcl_playpen_withoutrviz.launch"/>
 
   <!-- MOVE BASE -->
   <!-- remap the odom topic for local planner -->
   <node pkg="topic_tools" type="relay" name="relay_odom" args="/odom odom"/>
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
   <!-- COST MAP -->
-    <rosparam file="$(find rab_navigation)/params/costmap/costmap_common.yaml" command="load" ns="global_costmap"$
-    <rosparam file="$(find rab_navigation)/params/costmap/costmap_common.yaml" command="load" ns="local_costmap" $
+    <rosparam file="$(find rab_navigation)/params/costmap/costmap_common.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find rab_navigation)/params/costmap/costmap_common.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find rab_navigation)/params/costmap/local_costmap.yaml" command="load" />
     <rosparam file="$(find rab_navigation)/params/costmap/global_costmap.yaml" command="load" />
   <!-- BASE GLOBAL PLANNER -->
@@ -29,6 +29,6 @@
   </node>
 
   <!-- rviz -->
-  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find rab_utility_pkg)/config/nav.rviz" required="true" /> -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find rab_description)/config/move_base.rviz" required="true" />
 </launch>
 
