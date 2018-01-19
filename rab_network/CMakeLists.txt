@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(rab_bringup)
+project(rab_network)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -7,13 +7,7 @@ project(rab_bringup)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  roslib
-  nav_msgs
-)
-
-find_package(OpenCV REQUIRED)
+find_package(catkin REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -106,7 +100,7 @@ find_package(OpenCV REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES rab_bringup
+#  LIBRARIES rab_network
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
 )
@@ -118,12 +112,13 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-/usr/local/include ${catkin_INCLUDE_DIRS} ${OpenCV_LIBRARIES}
+# include
+# ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/rab_bringup.cpp
+#   src/${PROJECT_NAME}/rab_network.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -134,7 +129,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/rab_bringup_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/rab_network_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -191,19 +186,10 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_rab_bringup.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_rab_network.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-
-add_executable(image_viewer src/image_viewer.cpp)
-target_link_libraries(image_viewer ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
-
-add_executable(param_test src/param_test.cpp)
-target_link_libraries(param_test ${catkin_LIBRARIES})
-
-add_executable(odom_listener src/odom_listener.cpp)
-target_link_libraries(odom_listener ${catkin_LIBRARIES})
