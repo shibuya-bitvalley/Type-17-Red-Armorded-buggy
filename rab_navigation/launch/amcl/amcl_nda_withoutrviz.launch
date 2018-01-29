@@ -1,6 +1,6 @@
 <launch>
  <!-- MAP_SERVER -->
- <node name="map_server" pkg="map_server" type="map_server" args="$(find rab_navigation)/map/gazebo/playpen.yaml" />
+ <node name="map_server" pkg="map_server" type="map_server" args="$(find rab_navigation)/map/nda/20180123.yaml" />
  
  <node pkg="amcl" type="amcl" name="amcl" output="screen">
   <remap from="/scan" to="/base_scan" />
@@ -18,9 +18,9 @@
   <param name="recovery_alpha_fast" value="0.1"/>
   
   <!-- inital pose for playpen -->
-  <param name="initial_pose_x" value="-0.022" />
-  <param name="initial_pose_y" value="-0.001" />
-  <param name="initial_pose_a" value="0.002" />
+  <param name="initial_pose_x" value="0.029" />
+  <param name="initial_pose_y" value="-1.142" />
+  <param name="initial_pose_a" value="-0.014" />
   <param name="initial_cov_xx" value="0.1" />
   <param name="initial_cov_yy" value="0.1" />
   <param name="initial_cov_aa" value="0.005" />
