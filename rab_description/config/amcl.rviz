@@ -180,7 +180,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: 4.65
+      Angle: 1.585
       Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
@@ -212,6 +212,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: true
-  Width: 1855
-  X: 65
-  Y: 24
+  Width: 1280
+  X: 619
+  Y: 14
