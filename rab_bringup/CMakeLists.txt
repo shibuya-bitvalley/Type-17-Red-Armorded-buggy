@@ -207,3 +207,6 @@ target_link_libraries(param_test ${catkin_LIBRARIES})
 
 add_executable(odom_listener src/odom_listener.cpp)
 target_link_libraries(odom_listener ${catkin_LIBRARIES})
+
+add_executable(joy_avoidance src/joy_avoidance.cpp)
+target_link_libraries(joy_avoidance ${catkin_LIBRARIES})
