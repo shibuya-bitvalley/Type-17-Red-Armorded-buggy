@@ -1,0 +1,6 @@
+<launch>
+  <!-- 3d hokuyo node -->
+  <node pkg="hokuyo3d" type="hokuyo3d" name="hokuyo3d" output="screen">
+     <param name="frame_id" value="3d_sensor_link" />
+  </node>
+</launch>
