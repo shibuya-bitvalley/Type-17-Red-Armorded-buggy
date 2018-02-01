@@ -82,7 +82,7 @@ void JoyAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
    }else{
       flag = 0;
    }
-   ROS_ERROR("flag : %d", flag);
+   //ROS_ERROR("flag : %d", flag);
 }
 
 void JoyAvoidance::cmdvelCallback(const geometry_msgs::Twist::ConstPtr& vel){
