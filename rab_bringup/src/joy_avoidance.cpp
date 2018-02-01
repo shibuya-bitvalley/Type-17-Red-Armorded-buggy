@@ -9,6 +9,8 @@
 class JoyAvoidance{
  public:
    JoyAvoidance(ros::NodeHandle &nh);
+   int isInArea(const sensor_msgs::LaserScan::ConstPtr& scan, 
+		double angle_1, double angle_2, double min_dist, double max_dist);
    
  private:
    void sensorCallback(const sensor_msgs::LaserScan::ConstPtr& scan);
@@ -26,17 +28,17 @@ class JoyAvoidance{
    std::string pub_cmdvel_topic_;
    
    // declaration of menber variable
-   double front;
-   double right;
-   double left;
+   int front;
+   int right;
+   int left;
    int flag;
 };
 
 JoyAvoidance::JoyAvoidance(ros::NodeHandle &nh){
    ros::NodeHandle n("~");
-   n.param<std::string>("sub_cmdvel_topic", sub_cmdvel_topic_, "\"/cmd_vel_old\"");
-   n.param<std::string>("scan_topic", scan_topic_, "\"/base_scan\"");
-   n.param<std::string>("pub_cmdvel_topic", pub_cmdvel_topic_, "\"/cmd_vel\"");
+   n.param<std::string>("sub_cmdvel_topic", sub_cmdvel_topic_, "/cmd_vel_old");
+   n.param<std::string>("scan_topic", scan_topic_, "/base_scan");
+   n.param<std::string>("pub_cmdvel_topic", pub_cmdvel_topic_, "/cmd_vel");
    // Subscriber
    sub_scan = nh.subscribe("/base_scan", 10, &JoyAvoidance::sensorCallback, this);
    sub_vel = nh.subscribe("/cmd_vel_old", 1, &JoyAvoidance::cmdvelCallback, this);
@@ -44,45 +46,48 @@ JoyAvoidance::JoyAvoidance(ros::NodeHandle &nh){
    pub_vel = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 100);
 }
 
+int JoyAvoidance::isInArea(const sensor_msgs::LaserScan::ConstPtr& scan, 
+			   double angle_1, double angle_2, double min_dist, double max_dist){
+   double distance = 50.0;
+   for(int i = angle_1; i <= angle_2; i++){
+      if(min_dist < scan->ranges[i] && scan->ranges[i] < max_dist){
+	 distance = scan->ranges[i];
+      }
+   }
+   if(distance != 50.0){
+      return 1;
+   }else{
+      return 0;
+   }
+}
+
 void JoyAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
    // 位置に応じてフラグ変更
    this->front = scan->ranges.size() / 2; // 正面方向
-   this->right = scan->ranges.size() / 4; // 右90度方向
-   this->left = scan->ranges.size() * 3 / 4; // 左90度方向
-   ROS_INFO("front range = %lf", scan->ranges[front]);
-   ROS_INFO("right limit range = %lf", scan->ranges[right]);
-   ROS_INFO("left limit range = %lf", scan->ranges[left]);
-   // 正面
-   if(1.5 < scan->ranges[front]  && scan->ranges[front] <= 2.0){
+   this->right = scan->ranges.size() * 3 / 8; // 右45度方向
+   this->left = scan->ranges.size() * 5 / 8; // 左45度方向
+   ROS_INFO("front: %d , right: %d, left: %d", front, right, left);
+   // 右舷前方
+   if(isInArea(scan, right, front, 1.5, 2.0) == 1){
       flag = 1;
-   }else if(1.0 < scan->ranges[front] && scan->ranges[front] <= 1.5){
+   }else if(isInArea(scan, right, front, 1.0, 1.5) == 1){
       flag = 2;
-   }else if(scan->ranges[front] <= 1.0){
+   }else if(isInArea(scan, right, front, 0.0, 1.0) == 1){
       flag = 3;
    }else{
       flag = 0;
    }
-   // 右舷
-   if(0.75 <= scan->ranges[right] && scan->ranges[right] < 1.0){
+   // 左舷前方
+   if(isInArea(scan, front, left, 1.5, 2.0) == 1){
       flag = 4;
-   }else if(0.5 < scan->ranges[right] && scan->ranges[right] <= 0.75){
+   }else if(isInArea(scan, front, left, 1.0, 1.5) == 1){
       flag = 5;
-   }else if(scan->ranges[right] <= 0.5){
+   }else if(isInArea(scan, front, left, 0.0, 1.0) == 1){
       flag = 6;
    }else{
       flag = 0;
    }
-   // 左舷
-   if(0.75 <= scan->ranges[left] && scan->ranges[left] < 1.0){
-      flag = 7;
-   }else if(0.5 < scan->ranges[left] && scan->ranges[left] <= 0.75){
-      flag = 8;
-   }else if(scan->ranges[left] <= 0.5){
-      flag = 9;
-   }else{
-      flag = 0;
-   }
-   //ROS_ERROR("flag : %d", flag);
+   ROS_ERROR("flag : %d", flag); 
 }
 
 void JoyAvoidance::cmdvelCallback(const geometry_msgs::Twist::ConstPtr& vel){
