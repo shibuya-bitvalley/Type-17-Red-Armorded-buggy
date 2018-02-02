@@ -93,13 +93,13 @@ void JoyAvoidance::cmdvelCallback(const geometry_msgs::Twist::ConstPtr& vel){
    // フラグに応じてcmd_velの値を調整しをpublish
    geometry_msgs::Twist cmd_vel;
    // 右舷前方
-   if(flag == 1 && vel->linear.x > 0.0 && vel->angular.z < 0.0){
+   if(flag == 1 && (vel->linear.x > 0.0 || vel->angular.z < 0.0)){
       cmd_vel.linear.x = vel->linear.x * 0.8;
       cmd_vel.angular.z = vel->angular.z * 0.8;
-   }else if(flag == 2 && vel->linear.x > 0.0 && vel->angular.z < 0.0){
+   }else if(flag == 2 && (vel->linear.x > 0.0 || vel->angular.z < 0.0)){
       cmd_vel.linear.x = vel->linear.x * 0.5;
       cmd_vel.angular.z = vel->angular.z * 0.5;
-   }else if(flag == 3 && vel->linear.x > 0.0 && vel->angular.z < 0.0){
+   }else if(flag == 3 && (vel->linear.x > 0.0 || vel->angular.z < 0.0)){
       cmd_vel.linear.x = 0.0;
       cmd_vel.angular.z = 0.0;
    }else{
@@ -107,13 +107,13 @@ void JoyAvoidance::cmdvelCallback(const geometry_msgs::Twist::ConstPtr& vel){
       cmd_vel.angular.z = vel->angular.z;
    }
    // 左舷前方
-   if(flag == 4 && vel->linear.x > 0.0 && vel->angular.z > 0.0){
+   if(flag == 4 && (vel->linear.x > 0.0 || vel->angular.z > 0.0)){
       cmd_vel.linear.x = vel->linear.x * 0.8;
       cmd_vel.angular.z = vel->angular.z * 0.8;
-   }else if(flag == 5 && vel->linear.x > 0.0 && vel->angular.z > 0.0){
+   }else if(flag == 5 && (vel->linear.x > 0.0 || vel->angular.z > 0.0)){
       cmd_vel.linear.x = vel->linear.x * 0.5;
       cmd_vel.angular.z = vel->angular.z * 0.5;
-   }else if(flag == 6 && vel->linear.x > 0.0 && vel->angular.z > 0.0){
+   }else if(flag == 6 && (vel->linear.x > 0.0 || vel->angular.z > 0.0)){
       cmd_vel.linear.x = 0.0;
       cmd_vel.angular.z = 0.0;
    }
