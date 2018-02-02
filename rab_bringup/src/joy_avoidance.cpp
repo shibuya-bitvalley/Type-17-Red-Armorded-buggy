@@ -93,37 +93,31 @@ void JoyAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
 void JoyAvoidance::cmdvelCallback(const geometry_msgs::Twist::ConstPtr& vel){
    // フラグに応じてcmd_velの値を調整しをpublish
    geometry_msgs::Twist cmd_vel;
-   // front
-   if(flag == 1 && vel->linear.x > 0.0){
+   // 右舷前方
+   if(flag == 1 && vel->linear.x > 0.0 && vel->angular.z < 0.0){
       cmd_vel.linear.x = vel->linear.x * 0.8;
-   }else if(flag == 2 && vel->linear.x > 0.0){
+      cmd_vel.angular.z = vel->angular.z * 0.8;
+   }else if(flag == 2 && vel->linear.x > 0.0 && vel->angular.z < 0.0){
       cmd_vel.linear.x = vel->linear.x * 0.5;
-   }else if(flag == 3 && vel->linear.x > 0.0){
+      cmd_vel.angular.z = vel->angular.z * 0.5;
+   }else if(flag == 3 && vel->linear.x > 0.0 && vel->angular.z < 0.0){
       cmd_vel.linear.x = 0.0;
+      cmd_vel.angular.z = 0.0;
    }else{
       cmd_vel.linear.x = vel->linear.x;
-   }
-   // right
-   if(flag == 4 && vel->angular.z < 0.0){
-      cmd_vel.angular.z = vel->angular.z * 0.8;
-   }else if(flag == 5 && vel->angular.z < 0.0){
-      cmd_vel.angular.z = vel->angular.z * 0.5;
-   }else if(flag == 6 && vel->angular.z < 0.0){
-      cmd_vel.angular.z = 0.0;
-   }else{
       cmd_vel.angular.z = vel->angular.z;
    }
-   // left
-   if(flag == 7 && vel->angular.z > 0.0){
+   // 左舷前方
+   if(flag == 4 && vel->linear.x > 0.0 && vel->angular.z > 0.0){
+      cmd_vel.linear.x = vel->linear.x * 0.8;
       cmd_vel.angular.z = vel->angular.z * 0.8;
-   }else if(flag == 8 && vel->angular.z > 0.0){
+   }else if(flag == 5 && vel->linear.x > 0.0 && vel->angular.z > 0.0){
+      cmd_vel.linear.x = vel->linear.x * 0.5;
       cmd_vel.angular.z = vel->angular.z * 0.5;
-   }else if(flag == 9 && vel->angular.z > 0.0){
+   }else if(flag == 6 && vel->linear.x > 0.0 && vel->angular.z > 0.0){
+      cmd_vel.linear.x = 0.0;
       cmd_vel.angular.z = 0.0;
-   }else{
-      cmd_vel.angular.z = vel->angular.z;
    }
-   cmd_vel.linear.z = vel->linear.z;
    cmd_vel.linear.y = 0.0;
    pub_vel.publish(cmd_vel);
 }
