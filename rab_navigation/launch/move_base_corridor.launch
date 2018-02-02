@@ -1,7 +1,7 @@
 <launch>
   <master auto="start"/>
   <!-- AMCL -->
-  <include file="$(find rab_navigation)/launch/amcl/amcl_playpen_withoutrviz.launch"/>
+  <include file="$(find rab_navigation)/launch/amcl/amcl_corridor.launch"/>
 
   <!-- MOVE BASE -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
@@ -23,7 +23,7 @@
     <param name="oscillation_timeout" value="10.0" />
     <param name="clearing_rotation_allowed" value="true" />
   <!-- remap cmd_vel topic for RAB -->
-    <remap from="cmd_vel" to="/diff_drive_controller/cmd_vel"/>
+    <remap from="cmd_vel" to="/cmd_vel"/>
   </node>
 
   <!-- rviz -->
