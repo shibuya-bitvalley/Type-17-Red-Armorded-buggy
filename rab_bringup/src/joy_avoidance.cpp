@@ -66,10 +66,10 @@ void JoyAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
    this->front = scan->ranges.size() / 2; // 正面方向
    this->right = scan->ranges.size() * 3 / 8; // 右45度方向
    this->left = scan->ranges.size() * 5 / 8; // 左45度方向
-   ROS_INFO("front: %d , right: %d, left: %d", front, right, left);
    // 右舷前方
    if(isInArea(scan, right, front, 1.5, 2.0) == 1){
       flag = 1;
+      //ROS_INFO("右舷前方に障害物あり")
    }else if(isInArea(scan, right, front, 1.0, 1.5) == 1){
       flag = 2;
    }else if(isInArea(scan, right, front, 0.0, 1.0) == 1){
@@ -87,7 +87,6 @@ void JoyAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
    }else{
       flag = 0;
    }
-   ROS_ERROR("flag : %d", flag); 
 }
 
 void JoyAvoidance::cmdvelCallback(const geometry_msgs::Twist::ConstPtr& vel){
