@@ -66,10 +66,10 @@ void JoyAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
    this->front = scan->ranges.size() / 2; // 正面方向
    this->right = scan->ranges.size() * 3 / 8; // 右45度方向
    this->left = scan->ranges.size() * 5 / 8; // 左45度方向
-   ROS_INFO("front: %d , right: %d, left: %d", front, right, left);
    // 右舷前方
    if(isInArea(scan, right, front, 1.5, 2.0) == 1){
       flag = 1;
+      //ROS_INFO("右舷前方に障害物あり")
    }else if(isInArea(scan, right, front, 1.0, 1.5) == 1){
       flag = 2;
    }else if(isInArea(scan, right, front, 0.0, 1.0) == 1){
@@ -87,20 +87,19 @@ void JoyAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
    }else{
       flag = 0;
    }
-   ROS_ERROR("flag : %d", flag); 
 }
 
 void JoyAvoidance::cmdvelCallback(const geometry_msgs::Twist::ConstPtr& vel){
    // フラグに応じてcmd_velの値を調整しをpublish
    geometry_msgs::Twist cmd_vel;
    // 右舷前方
-   if(flag == 1 && vel->linear.x > 0.0 && vel->angular.z < 0.0){
+   if(flag == 1 && (vel->linear.x > 0.0 || vel->angular.z < 0.0)){
       cmd_vel.linear.x = vel->linear.x * 0.8;
       cmd_vel.angular.z = vel->angular.z * 0.8;
-   }else if(flag == 2 && vel->linear.x > 0.0 && vel->angular.z < 0.0){
+   }else if(flag == 2 && (vel->linear.x > 0.0 || vel->angular.z < 0.0)){
       cmd_vel.linear.x = vel->linear.x * 0.5;
       cmd_vel.angular.z = vel->angular.z * 0.5;
-   }else if(flag == 3 && vel->linear.x > 0.0 && vel->angular.z < 0.0){
+   }else if(flag == 3 && (vel->linear.x > 0.0 || vel->angular.z < 0.0)){
       cmd_vel.linear.x = 0.0;
       cmd_vel.angular.z = 0.0;
    }else{
@@ -108,13 +107,13 @@ void JoyAvoidance::cmdvelCallback(const geometry_msgs::Twist::ConstPtr& vel){
       cmd_vel.angular.z = vel->angular.z;
    }
    // 左舷前方
-   if(flag == 4 && vel->linear.x > 0.0 && vel->angular.z > 0.0){
+   if(flag == 4 && (vel->linear.x > 0.0 || vel->angular.z > 0.0)){
       cmd_vel.linear.x = vel->linear.x * 0.8;
       cmd_vel.angular.z = vel->angular.z * 0.8;
-   }else if(flag == 5 && vel->linear.x > 0.0 && vel->angular.z > 0.0){
+   }else if(flag == 5 && (vel->linear.x > 0.0 || vel->angular.z > 0.0)){
       cmd_vel.linear.x = vel->linear.x * 0.5;
       cmd_vel.angular.z = vel->angular.z * 0.5;
-   }else if(flag == 6 && vel->linear.x > 0.0 && vel->angular.z > 0.0){
+   }else if(flag == 6 && (vel->linear.x > 0.0 || vel->angular.z > 0.0)){
       cmd_vel.linear.x = 0.0;
       cmd_vel.angular.z = 0.0;
    }
