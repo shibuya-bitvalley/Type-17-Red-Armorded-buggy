@@ -18,9 +18,9 @@
   <param name="recovery_alpha_fast" value="0.1"/>
   
   <!-- inital pose for national defence academy -->
-  <param name="initial_pose_x" value="0.670" />
-  <param name="initial_pose_y" value="0.608" />
-  <param name="initial_pose_a" value="0.020" />
+  <param name="initial_pose_x" value="-1.050" />
+  <param name="initial_pose_y" value="7.119" />
+  <param name="initial_pose_a" value="-0.014" />
   <param name="initial_cov_xx" value="0.1" />
   <param name="initial_cov_yy" value="0.1" />
   <param name="initial_cov_aa" value="0.005" />
