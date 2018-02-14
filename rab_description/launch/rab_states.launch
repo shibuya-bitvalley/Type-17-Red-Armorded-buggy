@@ -1,0 +1,8 @@
+<launch>
+   <!-- arguments -->
+   <arg name="model" default="$(find rab_description)/robots/rab.urdf.xacro"/>
+   
+   <!-- parameters -->
+   <param name="robot_description" command="$(find xacro)/xacro.py '$(arg model)'"/>
+</launch>
+   
