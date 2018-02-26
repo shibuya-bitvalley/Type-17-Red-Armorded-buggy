@@ -1,10 +1,11 @@
 /* joy_control.launchからpublishされるcmd_velのデータをsubscribe、
-   base_scanもsubscribeし、進みたい方向に障害物があればcmd_velを0にしてpublish */
+   base_scanもsubscribeし、進みたい方向に障害物があればcmd_velを0にし、その状況に応じたフラグをpublish */
 
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <sensor_msgs/LaserScan.h>
 #include <geometry_msgs/Twist.h>
+#include <std_msgs/Int8.h>
 
 class JoyAvoidance{
  public:
@@ -21,6 +22,7 @@ class JoyAvoidance{
    ros::Subscriber sub_vel;
    // Publisher
    ros::Publisher pub_vel;
+   ros::Publisher pub_flag;
    
    // param for topic
    std::string sub_cmdvel_topic_;
@@ -32,6 +34,7 @@ class JoyAvoidance{
    int right;
    int left;
    int flag;
+   std_msgs::Int8 flag_states;
 };
 
 JoyAvoidance::JoyAvoidance(ros::NodeHandle &nh){
@@ -40,10 +43,11 @@ JoyAvoidance::JoyAvoidance(ros::NodeHandle &nh){
    n.param<std::string>("scan_topic", scan_topic_, "/base_scan");
    n.param<std::string>("pub_cmdvel_topic", pub_cmdvel_topic_, "/cmd_vel");
    // Subscriber
-   sub_scan = nh.subscribe("/base_scan", 10, &JoyAvoidance::sensorCallback, this);
-   sub_vel = nh.subscribe("/cmd_vel_old", 1, &JoyAvoidance::cmdvelCallback, this);
+   sub_scan = nh.subscribe(scan_topic_, 10, &JoyAvoidance::sensorCallback, this);
+   sub_vel = nh.subscribe(sub_cmdvel_topic_, 1, &JoyAvoidance::cmdvelCallback, this);
    // Publisher
-   pub_vel = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 100);
+   pub_vel = nh.advertise<geometry_msgs::Twist>("/diff_drive_controller/cmd_vel"/*pub_cmdvel_topic_*/, 100);
+   pub_flag = nh.advertise<std_msgs::Int8>("/flag", 10);
 }
 
 int JoyAvoidance::isInArea(const sensor_msgs::LaserScan::ConstPtr& scan, 
@@ -87,7 +91,7 @@ void JoyAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
    }else{
       flag = 0;
    }
-   //ROS_INFO("flag : %d", flag);
+   flag_states.data = flag;
 }
 
 void JoyAvoidance::cmdvelCallback(const geometry_msgs::Twist::ConstPtr& vel){
@@ -120,6 +124,7 @@ void JoyAvoidance::cmdvelCallback(const geometry_msgs::Twist::ConstPtr& vel){
    }
    cmd_vel.linear.y = 0.0;
    pub_vel.publish(cmd_vel);
+   pub_flag.publish(flag_states);
 }
 
 int main(int argc, char** argv){
