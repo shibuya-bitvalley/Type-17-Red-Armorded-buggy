@@ -210,3 +210,6 @@ target_link_libraries(odom_listener ${catkin_LIBRARIES})
 
 add_executable(joy_avoidance src/joy_avoidance.cpp)
 target_link_libraries(joy_avoidance ${catkin_LIBRARIES})
+
+add_executable(flag_subscriber src/flag_subscriber.cpp)
+target_link_libraries(flag_subscriber ${catkin_LIBRARIES})
