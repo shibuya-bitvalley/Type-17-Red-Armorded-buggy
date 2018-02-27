@@ -10,7 +10,7 @@
 class JoyAvoidance{
  public:
    JoyAvoidance(ros::NodeHandle &nh);
-   int isInArea(const sensor_msgs::LaserScan::ConstPtr& scan, 
+   double minimumdist(const sensor_msgs::LaserScan::ConstPtr& scan, 
 		double angle_1, double angle_2, double min_dist, double max_dist);
    
  private:
@@ -50,7 +50,7 @@ JoyAvoidance::JoyAvoidance(ros::NodeHandle &nh){
    pub_flag = nh.advertise<std_msgs::Int8>("/flag", 10);
 }
 
-int JoyAvoidance::isInArea(const sensor_msgs::LaserScan::ConstPtr& scan, 
+double JoyAvoidance::minimumdist(const sensor_msgs::LaserScan::ConstPtr& scan, 
 			   double angle_1, double angle_2, double min_dist, double max_dist){
    double distance = 50.0;
    for(int i = angle_1; i <= angle_2; i++){
@@ -59,37 +59,53 @@ int JoyAvoidance::isInArea(const sensor_msgs::LaserScan::ConstPtr& scan,
       }
    }
    if(distance != 50.0){
-      return 1;
+      return distance;
    }else{
-      return 0;
+      return 50.0;
    }
-}
+ }
 
 void JoyAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& scan){
    // 位置に応じてフラグ変更
    this->front = scan->ranges.size() / 2; // 正面方向
    this->right = scan->ranges.size() * 3 / 8; // 右45度方向
    this->left = scan->ranges.size() * 5 / 8; // 左45度方向
-   // 右舷前方
-   if(isInArea(scan, right, front, 1.5, 2.0) == 1){
-      flag = 1;
-      //ROS_INFO("右舷前方に障害物あり")
-   }else if(isInArea(scan, right, front, 1.0, 1.5) == 1){
-      flag = 2;
-   }else if(isInArea(scan, right, front, 0.0, 1.0) == 1){
-      flag = 3;
+   double right_dist = minimumdist(scan, right, front, 0.0, 2.0);
+   double left_dist = minimumdist(scan, front, left, 0.0 ,2.0);
+   int flag_angle;
+   if(right_dist < left_dist){
+      flag_angle = 1; //右舷前方に障害物あり
+   }else if(right_dist > left_dist){
+      flag_angle = 2;
    }else{
-      flag = 0;
+      flag_angle = 0;
    }
-   // 左舷前方
-   if(isInArea(scan, front, left, 1.5, 2.0) == 1){
-      flag = 4;
-   }else if(isInArea(scan, front, left, 1.0, 1.5) == 1){
-      flag = 5;
-   }else if(isInArea(scan, front, left, 0.0, 1.0) == 1){
-      flag = 6;
-   }else{
+   switch(flag_angle){
+    case 1:
+      if(right_dist < 1.0){
+	 flag = 3;
+	 break;
+      }else if(right_dist < 1.5){
+	 flag = 2;
+	 break;
+      }else if(right_dist < 2.0){
+	 flag = 1;
+	 break;
+      }
+    case 2:
+      if(left_dist < 1.0){
+	 flag = 6;
+	 break;
+      }else if(left_dist < 1.5){
+	 flag = 5;
+	 break;
+      }else if(left_dist < 2.0){
+	 flag = 4;
+	 break;
+      }
+    case 0:
       flag = 0;
+      break;
    }
    flag_states.data = flag;
 }
