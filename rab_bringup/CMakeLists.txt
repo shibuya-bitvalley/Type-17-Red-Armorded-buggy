@@ -7,7 +7,13 @@ project(rab_bringup)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  roslib
+  nav_msgs
+)
+
+find_package(OpenCV REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -112,8 +118,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
-# ${catkin_INCLUDE_DIRS}
+/usr/local/include ${catkin_INCLUDE_DIRS} ${OpenCV_LIBRARIES}
 )
 
 ## Declare a C++ library
@@ -193,3 +198,18 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+add_executable(image_viewer src/image_viewer.cpp)
+target_link_libraries(image_viewer ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+
+add_executable(param_test src/param_test.cpp)
+target_link_libraries(param_test ${catkin_LIBRARIES})
+
+add_executable(odom_listener src/odom_listener.cpp)
+target_link_libraries(odom_listener ${catkin_LIBRARIES})
+
+add_executable(joy_avoidance src/joy_avoidance.cpp)
+target_link_libraries(joy_avoidance ${catkin_LIBRARIES})
+
+add_executable(flag_subscriber src/flag_subscriber.cpp)
+target_link_libraries(flag_subscriber ${catkin_LIBRARIES})

@@ -42,6 +42,13 @@
 	 <origin xyz="-0.032 0 0.137"/>
    </joint>
    
+   <link name="3d_sensor_link"/>
+   <joint name="3d_sensor_link_joint" type="fixed">
+         <parent link="base_link"/>
+	 <child link="3d_sensor_link"/>
+	 <origin xyz="0.59 0 0.265"/>
+   </joint>
+   
    <!-- =========== transmission ============= -->
    <xacro:wheel_trans_v0 prefix="right"/>
    <xacro:wheel_trans_v0 prefix="left"/>
